@@ -1,9 +1,8 @@
-require("dotenv").config();
-const express = require("express");
-const logger = require("morgan");
-const cors = require("cors");
+import express from "express";
+import logger from "morgan";
+import cors from "cors";
 
-const formsRouter = require("./routes/api/forms");
+import formsRouter from "./routes/api/forms.js";
 
 const app = express();
 
@@ -24,4 +23,4 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || "Internal server error");
 });
 
-module.exports = app;
+export default app;

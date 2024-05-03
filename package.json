@@ -2,11 +2,13 @@
   "name": "picasso_dental",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node ./server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon ./server.js"
+    "start": "cross-env NODE_ENV=production node ./src/server.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./src/server.js"
   },
   "dependencies": {
+    "axios": "^1.6.8",
     "cors": "2.8.5",
     "cross-env": "7.0.3",
     "dotenv": "^16.0.3",
@@ -15,7 +17,9 @@
     "morgan": "1.10.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^3.3.4",
-    "nodemailer": "^6.9.3"
+    "node-telegram-bot-api": "^0.65.1",
+    "nodemailer": "^6.9.3",
+    "viber-bot": "^1.0.18"
   },
   "devDependencies": {
     "nodemon": "2.0.15"
