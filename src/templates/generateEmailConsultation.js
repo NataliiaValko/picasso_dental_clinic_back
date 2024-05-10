@@ -1,24 +1,32 @@
 export function generateEmailConsultation(data, type, awsLink = '') {
   switch (type) {
-    case 'tg':
-      return `Запис на онлайн консультацію!\nІ'мя: ${
-        data.name
-      };\nНомер телефону: ${data.phone};\nЕлектронна пошта: ${
-        data.email ? data.email : '-'
-      }\nОпис скарги:  ${data.complaint}\nКоментар: ${
-        data.comment ? data.comment : '-'
-      }.`;
+    case 'mail':
+      return `
+          ПІБ: ${data.name},
+          Номер телефону: ${data.phone},
+          Електронна пошта: ${data.email},
+          Опис скарги:  ${data.complaint},
+          Коментар:  ${data.comment ? data.comment : ''}
+        `;
 
     case 'aws':
-      return `Запис на онлайн консультацію!\nІ'мя: ${
-        data.name
-      };\nНомер телефону: ${data.phone};\nЕлектронна пошта: ${
-        data.email ? data.email : '-'
-      }\nОпис скарги:  ${data.complaint}\nКоментар: ${
-        data.comment ? data.comment : '-'
-      }\n${awsLink}`;
+      return `
+          ПІБ: ${data.name},
+          Номер телефону: ${data.phone},
+          Електронна пошта: ${data.email},
+          Опис скарги:  ${data.complaint},
+          Коментар:  ${data.comment ? data.comment : ''}
+          ${awsLink}`;
 
     default:
       break;
   }
 }
+
+// const emailContent = `
+// //     ПІБ: ${data.name},
+// //     Номер телефону: ${data.phone},
+// //     Електронна пошта: ${data.email},
+// //     Опис скарги:  ${data.complaint},
+// //     Коментар:  ${data.comment ? data.comment : ''}
+// //   `;
