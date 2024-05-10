@@ -1,3 +1,54 @@
+import fs from 'fs';
+
+import TelegramBot from 'node-telegram-bot-api';
+
+import { env, uploadToS3 } from '../../helpers/index.js';
+import { generateEmailConsultation } from '../../templates/index.js';
+
+const TG_API_TOKEN = env('TG_API_TOKEN');
+const TG_CHAT_ID = env('TG_CHAT_ID');
+
+const bot = new TelegramBot(TG_API_TOKEN, {
+  polling: false,
+  request: {
+    strictSSL: false,
+  },
+});
+
+const sendConsultation = async (req, res) => {
+  if (req.file.size < 45 * 1024 * 1024) {
+    await bot.sendDocument(TG_CHAT_ID, fs.createReadStream(req.file.path), {
+      caption: generateEmailConsultation(req.body, 'tg'),
+      contentType: 'application/octet-stream',
+    });
+  } else if (
+    req.file.size > 45 * 1024 * 1024 &&
+    req.file.mimetype === 'application/x-zip-compressed'
+  ) {
+    const awsLink = await uploadToS3(
+      req.file.originalname,
+      req.file.path,
+      'application/zip'
+    );
+    await bot.sendMessage(
+      TG_CHAT_ID,
+      generateEmailConsultation(req.body, 'aws', awsLink)
+    );
+  } else {
+    fs.unlinkSync(req.file.path);
+    res.status(400).json({ message: 'File too large' });
+    return;
+  }
+
+  fs.unlinkSync(req.file.path);
+
+  res.status(200).json({ message: 'File sent successfully' });
+};
+
+export default sendConsultation;
+
+// ---------------------------------------------------------------------------
+
 // import fs from 'fs';
 
 // import { transporter, mailOptions } from '../../helpers/index.js';
@@ -20,33 +71,6 @@
 
 //   res.status(200).json({ message: 'File sent successfully' });
 // };
-
-// ---------------------------------------------------------------------------
-
-import fs from 'fs';
-
-import TelegramBot from 'node-telegram-bot-api';
-
-import { env } from '../../helpers/index.js';
-import { generateEmailConsultation } from '../../templates/index.js';
-
-const TG_API_TOKEN = env('TG_API_TOKEN');
-const TG_CHAT_ID = env('TG_CHAT_ID');
-
-const bot = new TelegramBot(TG_API_TOKEN, { polling: false });
-
-const sendConsultation = async (req, res) => {
-  await bot.sendDocument(TG_CHAT_ID, fs.createReadStream(req.file.path), {
-    caption: generateEmailConsultation(req.body),
-    contentType: 'application/octet-stream',
-  });
-
-  fs.unlinkSync(req.file.path);
-
-  res.status(200).json({ message: 'File sent successfully' });
-};
-
-export default sendConsultation;
 
 // ------------------------------------------------------------------------------
 
